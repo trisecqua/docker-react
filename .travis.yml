@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t trisecqua/docker-react -f Dockerfile.dev .
+
+script: #travis montiors return codes of each of these scripts
+  - docker run trisecqua/docker-react npm run test -- --coverage
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-west-1"
+  app: "Docker-react"
+  env: "Docker-react-env"
+  bucket_name: "elasticbeanstalk-us-west-1-471112535362"
+  bucket_path: "Docker-react"
+
+on:
+  branch: master
+access_key_id: "$AWS_ACCESS_KEY"
+secret_access_key:
+  secure: "$AWS_SECRET_KEY"
